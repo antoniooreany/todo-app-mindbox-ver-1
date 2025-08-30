@@ -9,7 +9,10 @@ test('добавление задачи', () => {
   fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
   const allTasksList = screen.getByRole('heading', { name: /Все задачи/i }).nextElementSibling;
-  expect(within(allTasksList).getByText('Новая задача')).toBeInTheDocument();
+  if (!allTasksList) {
+    throw new Error('The task list was not found');
+  }
+  expect(within(allTasksList as HTMLElement).getByText('Новая задача')).toBeInTheDocument();
 });
 
 test('переключение состояния задачи', () => {
