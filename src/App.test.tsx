@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, within } from '@testing-library/react';
 import App from './App';
 
 test('добавление задачи', () => {
@@ -8,7 +8,8 @@ test('добавление задачи', () => {
   fireEvent.change(input, { target: { value: 'Новая задача' } });
   fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
-  expect(screen.getByText('Новая задача')).toBeInTheDocument();
+  const allTasksList = screen.getByRole('heading', { name: /Все задачи/i }).nextElementSibling;
+  expect(within(allTasksList).getByText('Новая задача')).toBeInTheDocument();
 });
 
 test('переключение состояния задачи', () => {
