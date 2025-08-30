@@ -1,9 +1,38 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('добавление задачи', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const input = screen.getByPlaceholderText(/Введите новую задачу/i);
+  fireEvent.change(input, { target: { value: 'Новая задача' } });
+  fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+  expect(screen.getByText('Новая задача')).toBeInTheDocument();
+});
+
+test('переключение состояния задачи', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Введите новую задачу/i);
+  fireEvent.change(input, { target: { value: 'Задача' } });
+  fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+  const checkbox = screen.getByRole('checkbox');
+  expect(checkbox).not.toBeChecked();
+
+  fireEvent.click(checkbox);
+  expect(checkbox).toBeChecked();
+});
+
+test('очистка выполненных задач', () => {
+  render(<App />);
+  const input = screen.getByPlaceholderText(/Введите новую задачу/i);
+  fireEvent.change(input, { target: { value: 'Задача' } });
+  fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+  const checkbox = screen.getByRole('checkbox');
+  fireEvent.click(checkbox);
+  fireEvent.click(screen.getByText(/Очистить выполненные/i));
+
+  expect(screen.queryByText('Задача')).not.toBeInTheDocument();
 });
